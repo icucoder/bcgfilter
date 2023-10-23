@@ -163,5 +163,6 @@ def run_quick_test_ans(Pathlist):
         print(i,record[i])
     # print(record)
     print(right, '/', ans.shape[0], '=', right / ans.shape[0])
+    print(right / ans.shape[0])
 
 # run_quick_test_ans()

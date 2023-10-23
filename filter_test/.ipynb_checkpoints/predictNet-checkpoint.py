@@ -11,7 +11,7 @@ np.random.seed(seed)
 torch.manual_seed(seed)
 
 class predictNet(nn.Module):
-    def __init__(self, kernel_size1, kernel_size2):
+    def __init__(self, kernel_size1, kernel_size2, data_length):
         super().__init__()
         self.kernel_size1 = kernel_size1
         self.conv1 = nn.Conv1d(
@@ -50,6 +50,9 @@ class predictNet(nn.Module):
         self.avgpool3 = nn.AvgPool1d(kernel_size=pred_length1, stride=pred_length1)
         self.avgpool4 = nn.AvgPool1d(kernel_size=pred_length2, stride=pred_length2)
         
+        # self.resnet = nn.Linear(data_length, data_length)
+        
+        
     def forward(self, output):
         # input shape : N 1 10000
         # # 卷积
@@ -76,6 +79,8 @@ class predictNet(nn.Module):
         
         output1 = self.avgpool3(output1)
         output2 = self.avgpool4(output2)# 1 1 5600
+        # 残差项 新增
+        
         output1 = torch.nn.functional.normalize(output1, dim=1)
         output2 = torch.nn.functional.normalize(output2, dim=1)
         return (output1 + output2).unsqueeze(1)
@@ -114,6 +119,8 @@ class predictNet(nn.Module):
         output2 = torch.flatten(output2.t()).unsqueeze(0)
         output1 = self.avgpool3(output1)
         output2 = self.avgpool4(output2)# 1 1 5600
+        # 残差项 新增
+        
         output1 = torch.nn.functional.normalize(output1, dim=1)
         output2 = torch.nn.functional.normalize(output2, dim=1)
         return output1.unsqueeze(1), output2.unsqueeze(1)
