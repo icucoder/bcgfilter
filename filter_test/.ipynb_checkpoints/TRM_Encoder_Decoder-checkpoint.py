@@ -176,7 +176,7 @@ class Transformer(nn.Module):
         self.src_pad_idx = src_pad_idx
         self.trg_pad_idx = trg_pad_idx
         self.device = device
-        self.linear = nn.Linear(self.embed_size, 50) # 需要与Unitedmodel的seqlength倍数一致
+        self.linear = nn.Linear(self.embed_size, 100) # 需要与Unitedmodel的seqlength倍数一致
         # 降低对比学习输出特征维度
     def forward(self, src):  # shape  N 6 50
         # 编码

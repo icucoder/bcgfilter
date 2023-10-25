@@ -14,7 +14,7 @@ class United_Model(nn.Module):
         super().__init__()
         self.elementlength = elementlength
         self.seq_length = seq_length
-        self.data_length = seq_length * 50 # 需要与TRM输出特征维度一致
+        self.data_length = seq_length * 100 # 需要与TRM输出特征维度一致
         self.model1 = Transformer(seq_length=seq_length, elementlength=elementlength).to(device)
         self.model2 = Transformer_Encoder(
             input_data_dim=self.data_length,
@@ -41,7 +41,7 @@ def Simloss(ans,target):
     Vsum = torch.sum(FV,dim=1)
     output = -torch.log(Usum/Vsum)
     return torch.sum(output,dim=0)
-def train_United_Model(*, model, data, origin, target, elementlength, lr, epoch):
+def train_United_Model(*, model, data, origin, target, persons, elementlength, lr, epoch):
     optimizer1 = optim.Adam(model.parameters(), lr=lr)
     criterion = nn.MSELoss()
     LossRecord = []
@@ -65,7 +65,23 @@ def train_United_Model(*, model, data, origin, target, elementlength, lr, epoch)
         sim_ans = torch.mm(output, output.t())
         # loss3 = Simloss(sim_ans, target) * 5000
         loss3 = criterion(sim_ans, target)
-        loss = loss1 + loss2 + loss3
+        # 模长loss
+        persons = persons
+        one_persons = int(data.shape[0]//persons)
+        Modloss = torch.tensor(0.0)
+        AvgMod = torch.zeros(persons, ans.shape[-1]).cuda()
+        ans = ans.view(ans.shape[0], ans.shape[-1])
+        for i in range(persons):
+            AvgMod[i] = torch.mean(ans[i*one_persons:(i+1)*one_persons,:],dim=0)
+        # print(AvgMod.shape)       
+        for i in range(persons):
+            oneMod = AvgMod[i].repeat(one_persons, 1)
+            # res = ans[i*one_persons:(i+1)*one_persons,:] - oneMod # 向量残差
+            moda = (ans[i*one_persons:(i+1)*one_persons,:]*ans[i*one_persons:(i+1)*one_persons,:])
+            modb = (oneMod*oneMod)
+            Modloss = Modloss + torch.sum(torch.sum((moda-modb)**2, dim=1),dim=0)
+        
+        loss = loss1 + loss2 + loss3# + Modloss
 
         loss.backward()
         optimizer1.step()
@@ -274,7 +290,7 @@ def run_United_model(epoch, Pathlist):
     target = target.to(device)
     print('--------------掩码+对比学习-------------------')
     for i in range(1):
-        model = train_United_Model(model=model, data=data, origin=origin, target=target, elementlength=elementlength, lr=0.0005, epoch=epoch)
+        model = train_United_Model(model=model, data=data, origin=origin, target=target, persons=persons, elementlength=elementlength, lr=0.0005, epoch=epoch)
 
     torch.save(model,'/root/zqh/Save_Model/United_model_device.pth')
 

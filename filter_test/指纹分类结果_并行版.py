@@ -105,8 +105,8 @@ def run_quick_test_ans(Pathlist):
     # output1 = data # 取消度量学习
 
     # 插入各类别权重
-    weights = torch.zeros(data.shape[0], 500).cuda()
-    weights[:, 0:500] = 1
+    weights = torch.zeros(data.shape[0], data.shape[-1]).cuda()
+    weights[:, 0:data.shape[-1]] = 1
     # list = [3, 4, 5, 20, 24, 33]
     # list = [41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26]
     # list = [2, 4, 7, 10, 15, 16, 18, 29, 30, 31]
@@ -131,7 +131,8 @@ def run_quick_test_ans(Pathlist):
     ans = torch.zeros(data.shape[0], int(data.shape[0] // oneperson_nums))
     for i in range(data.shape[0]):
         sample = output[i].repeat(int(data.shape[0] // oneperson_nums), 1)
-        save_dis = (sample - muban) * (sample - muban)
+        save_dis = (sample - muban) * (sample - muban) # L2范数
+        # save_dis = torch.abs(sample - muban) # L1范数
         save_dis = torch.sum(save_dis, dim=1)
         ans[i] = save_dis
 
