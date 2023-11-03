@@ -36,44 +36,38 @@ class Transformer_Encoder(nn.Module):
         self.combine_head_and_change_dim = nn.Linear(self.batches * self.each_batch_dim,
                                                      self.input_data_dim)
 
-        # 向前连接层  无效
-        # self.feed_forward = nn.Sequential(
-        #     nn.Linear(self.input_data_dim, self.feed_forward_hidden_dim),
-        #     # nn.GELU(),
-        #     # nn.Dropout(0.1),
-        #     # nn.Linear(self.feed_forward_hidden_dim, input_data_dim),
-        #     nn.Linear(self.feed_forward_hidden_dim, input_data_dim),
-        #     # nn.Dropout(0.1)
-        # )
 
     def forward(self, same_output):
 
         same_output = same_output.repeat(1, 1, 3)
         # output_data = torch.zeros((int(same_output.shape[0]), self.each_head_dim))  # .cuda()
-        output_data = torch.zeros((int(same_output.shape[0]), self.each_batch_dim)).cuda()
-        qq = same_output[:, :, 0:self.input_data_dim].squeeze(1)
-        kk = same_output[:, :, self.input_data_dim:self.input_data_dim * 2].squeeze(1)
-        vv = same_output[:, :, 2 * self.input_data_dim:3 * self.input_data_dim].squeeze(1)
+        output_data = torch.zeros((int(same_output.shape[0]), 1, self.each_batch_dim)).cuda()
+        qq = same_output[:, :, 0:self.input_data_dim]
+        kk = same_output[:, :, self.input_data_dim:self.input_data_dim * 2]
+        vv = same_output[:, :, 2 * self.input_data_dim:3 * self.input_data_dim]
         for i in range(self.batches):
-            q = qq[:, i * self.each_batch_dim:(i + 1) * self.each_batch_dim]
-            k = kk[:, i * self.each_batch_dim:(i + 1) * self.each_batch_dim]
-            v = vv[:, i * self.each_batch_dim:(i + 1) * self.each_batch_dim]
+            q = qq[:,:, i * self.each_batch_dim:(i + 1) * self.each_batch_dim]
+            k = kk[:,:, i * self.each_batch_dim:(i + 1) * self.each_batch_dim]
+            v = vv[:,:, i * self.each_batch_dim:(i + 1) * self.each_batch_dim]
             q = self.linear_transfer[3*i+0](q) # 240 1 320
             k = self.linear_transfer[3*i+1](k) 
             v = self.linear_transfer[3*i+2](v)
             # q = self.linear_transfer[0](q)
             # k = self.linear_transfer[1](k)
             # v = self.linear_transfer[2](v)
+            att = torch.matmul(self.softmax(torch.matmul(q, k.transpose(-1, -2)) * self.d_k), v)
+            # print(output_data.shape)
+            # print(att.shape)
             output_data = torch.cat([output_data,
-                                     torch.matmul(self.softmax(torch.matmul(q, k.transpose(-1, -2)) * self.d_k),
-                                                  v)], dim=-1)
+                                     att],
+                                    dim=-1)
 
-        output_data = output_data[:, self.each_batch_dim:]
+        output_data = output_data[:,:, self.each_batch_dim:]
         output_data = self.combine_head_and_change_dim(output_data)
 
         # output_data = self.feed_forward(output_data)
         # output_data = self.softmax(output_data)
-        return output_data.unsqueeze(1)
+        return output_data
 
 
 # 无batch_size  target表示最终的目标余弦相似度矩阵  label表示某一个人的数据

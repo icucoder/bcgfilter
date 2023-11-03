@@ -247,7 +247,12 @@ def getIndexByGrad(data): # 1 1 10000
     for i in range(length, datalength - length):
         if (data[0][0][i]-data[0][0][i-1]) >= (data[0][0][i-1]-data[0][0][i-2]) and (data[0][0][i]-data[0][0][i-1]) >= (data[0][0][i+1]-data[0][0][i]):
             value = (data[0][0][i]-data[0][0][i-1])
-            reslist.append(one_peaks(i, value))
+            res = 0
+            for j in range(100):
+                if(data[0][0][i+j]>data[0][0][i+j-1] and data[0][0][i+j]>data[0][0][i+j+1]):
+                    res = j
+                    break
+            reslist.append(one_peaks(i+res, value))
     reslist = sorted(reslist, key=lambda x: (-x.value, x.index))
     output_list = []
     for i in range(15):

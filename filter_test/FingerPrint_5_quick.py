@@ -224,16 +224,10 @@ def run_FingerPrint(epoch, Pathlist):
         ans[i] = save_dis
 
     # ans 作为指纹输入
-    aans = torch.cat([ans[0].unsqueeze(0), ans[1].unsqueeze(0), ans, ans[-2].unsqueeze(0), ans[-1].unsqueeze(0)], dim=0)
-    ans = aans[0:5].view(1,5*aans.shape[-1])
-    for i in range(aans.shape[0]-5):
-        ans = torch.cat([ans,aans[i+1:i+1+5].view(1,5*aans.shape[-1])],dim=0)
-    print(ans.shape)
-    print(label.shape)
     ans = - ans.cuda()
-    model = FingerPrint(input_data_dim=ans.shape[-1],batches=5,each_batch_dim=int(ans.shape[-1]//5)).cuda()
+    model = FingerPrint(input_data_dim=ans.shape[-1],batches=1,each_batch_dim=int(ans.shape[-1]//1)).cuda()
     train_FingerPrint(model=model, data=ans, target=target.cuda(),label=label.cuda(),lr=0.0001,epoch=epoch)
-    torch.save(model, '/root/zqh/Save_Model/FingerPrint_quick_5.pth')
+    torch.save(model, '/root/zqh/Save_Model/FingerPrint_quick_1.pth')
     print('模型保存成功！')
 
     # 查看结果

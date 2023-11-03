@@ -21,7 +21,7 @@ class United_Model(nn.Module):
             batches=5,
             each_batch_dim=int(self.data_length/5),
             feed_forward_hidden_dim=20,
-        ).cuda()
+        ).to(device)
 
 
     def forward(self, input):
@@ -29,8 +29,8 @@ class United_Model(nn.Module):
         features, ans = self.model1(input)
         features = features.view(features.shape[0], 1, features.shape[1] * features.shape[2])
         ans = ans.view(ans.shape[0], 1, ans.shape[1] * ans.shape[2])
-        output = self.model2(features).squeeze()
-        return features, ans, output
+        output = self.model2(features)
+        return features, ans, output.squeeze(1)
 
 def Simloss(ans,target):
     U = ans * target # 行和为正样本

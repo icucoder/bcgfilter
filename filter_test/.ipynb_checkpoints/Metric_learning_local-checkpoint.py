@@ -25,7 +25,7 @@ class Metric_Model(nn.Module):
             nn.Linear(self.input_data_dim, 10000, bias=False),
             nn.LeakyReLU(inplace=True),
             nn.Linear(10000, 600, bias=False), # 原来50 0614修改
-            nn.LeakyReLU(inplace=True),
+            # nn.LeakyReLU(inplace=True),
             # nn.Softmax(dim=2)
         )
         # 拉高度量学习维度，使得对比学习的输出结果可以将密度高的地方稀疏化（流形）
@@ -78,12 +78,12 @@ def train_Metric_Model(*, model, data, label, target, lr=0.0001, epoch=2):
             pic_var[i] = torch.sum(
                 torch.var(output[one_persons*i:one_persons*(i+1),:],dim=0),
                 dim=0)*100
-        if _==0:
-            plt.subplot(2,1,1)
-            plt.plot(pic_var.detach().numpy())
-        if _==epoch-1:
-            plt.subplot(2,1,2)
-            plt.plot(pic_var.detach().numpy())
+        # if _==0:
+        #     plt.subplot(2,1,1)
+        #     plt.plot(pic_var.detach().numpy())
+        # if _==epoch-1:
+        #     plt.subplot(2,1,2)
+        #     plt.plot(pic_var.detach().numpy())
         
         # 原始
         for i in range(data.shape[0]):
@@ -101,7 +101,6 @@ def train_Metric_Model(*, model, data, label, target, lr=0.0001, epoch=2):
         loss.backward()
         optimizer.step()
         LossRecord.append(loss.item())
-    plt.show()
     # LossRecord = torch.tensor(LossRecord, device="cpu")
     # plt.plot(LossRecord)
     # plt.show()
@@ -203,7 +202,7 @@ def run_Metric_Model(epoch, Pathlist):
     # 区分设备
     # data = distinguish_device(data=data, device1=26, device2=16, onepersonnums=20)
 
-    Unite_model = torch.load('/root/zqh/Save_Model/United_model_device.pth').cuda()
+    Unite_model = torch.load('/root/zqh/Save_Model/United_model_device.pth').cuda().eval()
     feature1, ans, feature2 = Unite_model(data)
     features = feature2 # 对比学习
     # features = ans # 对比学习取消

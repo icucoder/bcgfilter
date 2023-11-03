@@ -136,11 +136,7 @@ def run_quick_test_ans(Pathlist):
         save_dis = torch.sum(save_dis, dim=1)
         ans[i] = save_dis
 
-    aans = torch.cat([ans[0].unsqueeze(0), ans[1].unsqueeze(0), ans, ans[-2].unsqueeze(0), ans[-1].unsqueeze(0)], dim=0)
-    ans = aans[0:5].view(1, 5 * aans.shape[-1])
-    for i in range(aans.shape[0] - 5):
-        ans = torch.cat([ans, aans[i + 1:i + 1 + 5].view(1, 5 * aans.shape[-1])], dim=0)
-
+    
     print(ans.shape)
     print(label.shape)
     ans = -ans.cuda()

@@ -6,6 +6,7 @@ import os
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import matplotlib.pylab as plt
 
+torch.manual_seed(10)
 
 class SelfAttention(nn.Module):
     def __init__(self, embed_size, heads):
@@ -91,7 +92,7 @@ class Encoder(nn.Module):
         self.layers = nn.ModuleList(
             [
                 TransformerBlock(embed_size=embed_size, heads=8, dropout=0, forward_expansion=4, )
-                for _ in range(6)]
+            for _ in range(6)]
         )
         # self.linear = nn.Linear(embed_size, 10)
 
@@ -133,7 +134,8 @@ class Decoder(nn.Module):
         self.word_embedding = nn.Linear(elementlength, embed_size)
         self.position_embedding = nn.Embedding(seq_length, embed_size)  # 位置编码
         self.layers = nn.ModuleList(
-            [DecoderBlock(embed_size=embed_size, heads=8, forward_expansion=4, dropout=0.1, device=device)
+            [
+                DecoderBlock(embed_size=embed_size, heads=8, forward_expansion=4, dropout=0, device=device)
              for _ in range(6)]
         )
         self.fc_out = nn.Linear(embed_size, elementlength)
