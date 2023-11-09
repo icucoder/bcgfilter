@@ -46,17 +46,6 @@ def train_Metric_Model(*, model, data, label, target, lr=0.0001, epoch=2):
     length = data.shape[0]
     target_dis = (1 - target) * 1000 + 10*torch.ones(target.shape).cuda()  # 强制要求同类别间也有距离
     data = data.data
-    # 插入各类别权重
-    # list = [3,4,5,20,24,33]
-    # list = [41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26]
-    # list = [2, 4, 7, 10, 15, 16, 18, 29, 30, 31]
-    # list = [5, 7, 8, 11, 12, 13, 14, 15, 19, 21, 23, 25, 29, 34, 37, 40,] # KL散度
-    # list = [11, 29, 34, 19, 40, 5, 23, 13, 7, 37, 14, 15, 25, 8, 33, 21]  # 最小的三个散度均值排序
-    # list = [37,32,36,34,5,16,33,24,19,29,11,2,8,40,25,20] # 0703
-    # list = []
-    # list = [37,32,36,34,5,16,33,24,19,29,11,2,20,10,40] # 0707
-    # for i in list:
-    #     weights[i*int(data.shape[0]//label[-1]):(i+1)*int(data.shape[0]//label[-1]),150:200] = 1
 
     for _ in tqdm(range(epoch)):
         optimizer.zero_grad()
@@ -93,8 +82,8 @@ def train_Metric_Model(*, model, data, label, target, lr=0.0001, epoch=2):
             save_dis = torch.sum(save_dis,dim=1)
             save_dis = torch.where(save_dis>1050, 1050, save_dis)  # modify 0613 原本是注释掉
             # loss2 = var_weight[i] + criterion(save_dis, target_dis[i]) + loss2
-            weight = torch.ones(data.shape[0]).cuda()
-            weight[int(i//one_persons)*one_persons:int(i//one_persons+1)*one_persons] = int(var_weight[int(i//one_persons)])
+            # weight = torch.ones(data.shape[0]).cuda()
+            # weight[int(i//one_persons)*one_persons:int(i//one_persons+1)*one_persons] = int(var_weight[int(i//one_persons)])
             loss2 = criterion(save_dis, target_dis[i]) + loss2 + var_weight[i] # 加方差
             # loss2 = criterion(weight*save_dis, weight*target_dis[i]) + loss2  # 用方差做组内权重
         loss = loss2

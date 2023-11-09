@@ -245,7 +245,7 @@ def run_FingerPrint(epoch, Pathlist, batches):
     # ans 作为指纹输入
     ans = - ans.cuda()
     model = FingerPrint(input_data_dim=ans.shape[-1],batches=batches,each_batch_dim=int(ans.shape[-1]//batches)).cuda()
-    train_FingerPrint(model=model, data=ans, target=target.cuda(),label=label.cuda(),lr=0.0001,epoch=epoch)
+    model = train_FingerPrint(model=model, data=ans, target=target.cuda(),label=label.cuda(),lr=0.0001,epoch=epoch)
     torch.save(model, '/root/zqh/Save_Model/FingerPrint_quick_1.pth')
     print('模型保存成功！')
 

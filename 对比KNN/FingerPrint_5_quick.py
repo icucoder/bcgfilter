@@ -93,75 +93,6 @@ def train_FingerPrint(*, model, data, label, target, lr=0.0001, epoch=2):
 
 def run_FingerPrint(epoch, Pathlist, batches):
     print('--------------指纹识别-------------------')
-    # 放入全部人员
-    # Pathlist = [
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa1.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa5.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa6.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa7.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa8.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa9.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa10.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa11.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa12.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa13.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa14.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa15.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa16.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa17.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa18.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa19.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa20.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa21.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa22.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa23.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa24.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa25.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa26.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa27.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa28.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa29.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa30.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa31.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa32.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa33.pt',  # 新增数据
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa34.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa35.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa36.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa37.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa38.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa39.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_pa40.pt',  # 26人
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_zqh1.pt',
-    #     # 'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_zqh2.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_zzp612.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_tt612.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_whd612.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_qjf612.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_sjj612.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_zj612.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_dj613.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_dxt613.pt',
-    #     # 'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_ltm613.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_rrx613.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_wg613.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_wxy.pt',
-    #     # 'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_caoan615.pt',
-    #     '/root/zqh/BCGDataSet/modify_extract_Single_resolution_sample1.pt',  # 16人
-    # ]
-    # 新增数据
-    # Pathlist = [
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa15.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa17.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa18.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa19.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa22.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa27.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa30.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa31.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa32.pt',  # 新增数据
-    #     'D:/zqh/BCG125hz_Dataset/modify_extract_Single_resolution_pa33.pt',  # 新增数据
-    # ]
     oneperson_begin = 0
     oneperson_end = 20
     oneperson_nums = oneperson_end - oneperson_begin
@@ -245,7 +176,7 @@ def run_FingerPrint(epoch, Pathlist, batches):
     # ans 作为指纹输入
     ans = - ans.cuda()
     model = FingerPrint(input_data_dim=ans.shape[-1],batches=batches,each_batch_dim=int(ans.shape[-1]//batches)).cuda()
-    train_FingerPrint(model=model, data=ans, target=target.cuda(),label=label.cuda(),lr=0.0001,epoch=epoch)
+    model = train_FingerPrint(model=model, data=ans, target=target.cuda(),label=label.cuda(),lr=0.0001,epoch=epoch)
     torch.save(model, '/root/zqh/Save_Model/FingerPrint_quick_1.pth')
     print('模型保存成功！')
 
